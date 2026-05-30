@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>Nhs.Sc</AssemblyName>
+		<RootNamespace>Nhs.Sc</RootNamespace>
+	</PropertyGroup>	
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ExcelDataReader" />
+		<PackageReference Include="ExcelDataReader.DataSet" />
+		<PackageReference Include="Microsoft.Data.Sqlite" />
+	</ItemGroup>
+
+</Project>
