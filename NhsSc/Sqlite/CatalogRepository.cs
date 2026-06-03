@@ -83,6 +83,53 @@ static class CatalogRepository
         transaction.Commit();
     }
 
+    public static List<List<CatalogRow>> GetDuplicateMpcGroups(string dbPath)
+    {
+        using var connection = new SqliteConnection($"Data Source={dbPath}");
+        connection.Open();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = """
+            SELECT NPC, MPC, BaseDescription, SecondaryDescription, UOI, B1Price, IndividualPrice
+            FROM Catalog
+            WHERE MPC IS NOT NULL AND MPC != ''
+              AND MPC IN (
+                  SELECT MPC FROM Catalog
+                  WHERE MPC IS NOT NULL AND MPC != ''
+                  GROUP BY MPC HAVING COUNT(*) > 1
+              )
+            ORDER BY MPC,
+                     CASE WHEN IndividualPrice IS NULL THEN 1 ELSE 0 END,
+                     IndividualPrice ASC
+            """;
+
+        var groups = new Dictionary<string, List<CatalogRow>>(StringComparer.Ordinal);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var mpc = reader.GetString(1);
+            var row = new CatalogRow(
+                Npc: reader.IsDBNull(0) ? null : reader.GetString(0),
+                Mpc: mpc,
+                BaseDescription: reader.IsDBNull(2) ? null : reader.GetString(2),
+                SecondaryDescription: reader.IsDBNull(3) ? null : reader.GetString(3),
+                Uoi: reader.IsDBNull(4) ? null : reader.GetString(4),
+                ListPrice: reader.IsDBNull(5) ? null : reader.GetDouble(5),
+                IndividualPrice: reader.IsDBNull(6) ? null : reader.GetDouble(6)
+            );
+
+            if (!groups.TryGetValue(mpc, out var list))
+            {
+                list = [];
+                groups[mpc] = list;
+            }
+            list.Add(row);
+        }
+
+        return [.. groups.Values];
+    }
+
     static void Execute(SqliteConnection connection, string sql)
     {
         using var cmd = connection.CreateCommand();

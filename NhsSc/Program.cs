@@ -2,17 +2,17 @@ using Nhs.Sc;
 
 for (var i = 0; i < args.Length; i++)
 {
-    if (args[i] == "--rebuild-catalog")
+    if (args[i] == "--dedupe")
     {
         if (i + 1 >= args.Length || args[i + 1].StartsWith("--"))
         {
-            Console.Error.WriteLine("Usage: nhs.sc --rebuild-catalog <spreadsheet>");
+            Console.Error.WriteLine("Usage: nhs.sc --dedupe <spreadsheet>");
             return 1;
         }
 
         try
         {
-            new RebuildCatalogCommand().Execute(args[i + 1]);
+            new DedupeCommand().Execute(args[i + 1]);
         }
         catch (Exception ex)
         {
@@ -24,5 +24,5 @@ for (var i = 0; i < args.Length; i++)
     }
 }
 
-Console.Error.WriteLine("Usage: nhs.sc --rebuild-catalog <spreadsheet>");
+Console.Error.WriteLine("Usage: nhs.sc --dedupe <spreadsheet>");
 return 1;

@@ -13,6 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="ClosedXML" />
 		<PackageReference Include="ExcelDataReader" />
 		<PackageReference Include="ExcelDataReader.DataSet" />
 		<PackageReference Include="Microsoft.Data.Sqlite" />
